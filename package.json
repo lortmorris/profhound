@@ -1,0 +1,32 @@
+{
+  "name": "profhound",
+  "version": "1.0.0",
+  "description": "Easy way to Proff and Follow any request inside Express",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Cesar Casas <cesarcasas@bsdsolutions.com.ar> (https://ar.linkedin.com/in/cesarcasas)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lortmorris/profhound.git"
+  },
+  "keywords": [
+    "profile",
+    "logs",
+    "request",
+    "express",
+    "stats"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lortmorris/profhound/issues"
+  },
+  "homepage": "https://github.com/lortmorris/profhound#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "mongojs": "^2.4.0",
+    "redis": "^2.6.2",
+    "uuid": "^2.0.3"
+  }
+}
