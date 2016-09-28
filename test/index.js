@@ -2,7 +2,7 @@ const express = require("express");
 const http = require("http");
 const winston = require('winston');
 const udp = require('winston-udp').UDP;
-const profhound = require("../index");
+const profhound = require("profhound");
 const app = express();
 
 
