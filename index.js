@@ -1,17 +1,21 @@
 const uuid = require("uuid");
 
-const profhound = function (app) {
+const profhound = function (opts) {
 
 	let activeRequest = {};
 	let initialized = false;
 
+	const options = Object.assign({}, {
+		drivers: [
+			(data)=> console.log(data)
+		]
+	}, opts || {});
 
 	const unregisterRequest = (req)=> delete activeRequest[req.uuid];
 	const registerRequest = (req)=> activeRequest[req.uuid] = req.init;
 
 	const saveData = (data)=> {
-		console.log("saved: ", data);
-		//db.history.insert(toSave);
+		options.drivers.forEach(d => setTimeout(()=>d(data), 0));
 	};
 
 	const saveError = (req, e)=> {
@@ -20,7 +24,9 @@ const profhound = function (app) {
 			url: req.url,
 			time: new Date().getTime(),
 			hrtime: process.hrtime(),
-			error: e
+			error: e,
+			type: 'info',
+			mtype: 'error'
 		})
 	}
 
@@ -29,13 +35,15 @@ const profhound = function (app) {
 		req.uuid = uuid.v4();
 		req.init = {
 			uuid: req.uuid,
-			date: new Date().getTime(),
+			date: new Date(),
+			time: new Date().getTime(),
 			hrtime: process.hrtime(),
 			body: req.body,
 			query: req.query,
 			url: req.url,
 			headers: req.headers,
-			type: "init"
+			type: "info",
+			mtype: 'init'
 		};
 
 		saveData(req.init);
@@ -45,10 +53,11 @@ const profhound = function (app) {
 
 		res.end = (buff) => {
 			let toSave = {
-				type: "end",
+				type: "info",
 				date: new Date().getTime(),
 				hrtime: process.hrtime(),
-				uuid: req.uuid
+				uuid: req.uuid,
+				mtype: 'end'
 			};
 
 			saveData(toSave);
@@ -62,13 +71,15 @@ const profhound = function (app) {
 
 		};
 
-		req.log = function () {
+		req.log = function (type, data) {
+
 			saveData({
 				uuid: req.uuid,
 				time: new Date().getTime(),
 				hrtime: process.hrtime(),
-				data: arguments
-			});
+				type: type,
+				mtype: 'flow'
+			}, {data: data});
 		};
 
 
@@ -79,7 +90,7 @@ const profhound = function (app) {
 
 				s.handle = (req, res, next) => {
 					if (req.log) {
-						req.log("mws", "pass");
+						req.log('debug', {mws: 'pass'});
 					}
 
 					try {
