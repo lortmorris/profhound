@@ -1,6 +1,6 @@
 {
   "name": "profhound",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Easy way to Proff and Follow any request inside Express",
   "main": "index.js",
   "scripts": {

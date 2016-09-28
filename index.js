@@ -30,12 +30,24 @@ const profhound = function (opts) {
 		})
 	}
 
+
+	const realip = (req)=> {
+		let ip = null;
+		if (req.headers && req.headers['x-forwarded-for']) {
+			let parts = req.headers['x-forwarded-for'].split(",");
+			ip = parts[0];
+		} else {
+			ip = req.ip;
+		}
+		return ip;
+	}
+
 	const _profhound = (req, res, next) => {
 
 		req.uuid = uuid.v4();
 		req.init = {
-			uuid: req.uuid,
 			date: new Date(),
+			uuid: req.uuid,
 			time: new Date().getTime(),
 			hrtime: process.hrtime(),
 			body: req.body,
@@ -43,7 +55,8 @@ const profhound = function (opts) {
 			url: req.url,
 			headers: req.headers,
 			type: "info",
-			mtype: 'init'
+			mtype: 'init',
+			ip: realip(req)
 		};
 
 		saveData(req.init);
@@ -54,7 +67,8 @@ const profhound = function (opts) {
 		res.end = (buff) => {
 			let toSave = {
 				type: "info",
-				date: new Date().getTime(),
+				date: new Date(),
+				time: new Date().getTime(),
 				hrtime: process.hrtime(),
 				uuid: req.uuid,
 				mtype: 'end'
@@ -72,14 +86,15 @@ const profhound = function (opts) {
 		};
 
 		req.log = function (type, data) {
-
 			saveData({
+				date: new Date(),
 				uuid: req.uuid,
 				time: new Date().getTime(),
 				hrtime: process.hrtime(),
 				type: type,
-				mtype: 'flow'
-			}, {data: data});
+				mtype: 'flow',
+				data: data
+			});
 		};
 
 
