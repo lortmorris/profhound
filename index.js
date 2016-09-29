@@ -105,7 +105,7 @@ const profhound = function (opts) {
 
 				s.handle = (req, res, next) => {
 					if (req.log) {
-						req.log('debug', {mws: 'pass'});
+						req.log('debug', {mws: 'pass', signature: req.signature || null });
 					}
 
 					try {

@@ -2,7 +2,7 @@ const express = require("express");
 const http = require("http");
 const winston = require('winston');
 const udp = require('winston-udp').UDP;
-const profhound = require("profhound");
+const profhound = require("../index");
 const app = express();
 
 
@@ -13,9 +13,11 @@ winston.add(winston.transports.UDP, {
 
 
 app.use(profhound({
-	drivers: [(data)=> {
-		winston.log(data.type ? data.type : "info", JSON.stringify(data));
-	}
+	drivers: [
+		(data)=> {
+			console.log(data);
+			//winston.log(data.type ? data.type : "info", JSON.stringify(data));
+		}
 	]
 }));
 
@@ -28,6 +30,10 @@ for (let x = 0; x < 10; x++) {
 }
 
 app.use((req, res, next)=> {
+	req.signature = {
+		name: 'el capo firmando'
+	};
+
 	next();
 });
 

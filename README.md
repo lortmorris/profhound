@@ -6,6 +6,16 @@ With this lib you cn log using diff drivers (console, winston, etc) and follow a
 ## req injection
 Inside object req, you'll have 2 new properties: uuid and log.
 
+## signature
+All mws are be loggued by Profhound, and it will use the property 'signature'.
+
+For example, if you want add information to log in you mws, you can do:
+```js
+app.use((req, res, next)=>{
+
+})
+```
+
 ### uuid
 When request is arrive, ProfHound generate a uuid and inject withing 'req' express object.
 
