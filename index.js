@@ -98,26 +98,31 @@ const profhound = function (opts) {
 		};
 
 
-		req.app._router.stack.forEach(s => {
-			let handle = s.handle;
-			if (!handle.__me && !handle.__wrap) {
-				handle.__wrap = true;
+		if(!initialized){
+			req.app._router.stack.forEach(s => {
 
-				s.handle = (req, res, next) => {
-					if (req.log) {
-						req.log('debug', {mws: 'pass', signature: req.signature || null });
-					}
+				let handle = s.handle;
+				if (!s.handle.__me) {
 
-					try {
-						handle(req, res, next);
-					} catch (e) {
-						saveError(req, e);
-					}
-				};
-			}
-		});
+					s.handle = (req, res, next) => {
+						if (req.log) {
+							req.log('debug', {mws: 'pass', signature: req.signature || null });
+						}
 
-		initialized = true;
+						try {
+							handle(req, res, next);
+						} catch (e) {
+							saveError(req, e);
+						}
+					};
+				}
+			});
+
+			initialized = true;
+		}
+
+
+
 		next();
 	};
 
