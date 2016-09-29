@@ -53,6 +53,7 @@ const profhound = function (opts) {
 			body: req.body,
 			query: req.query,
 			url: req.url,
+			hostname: req.hostname,
 			headers: req.headers,
 			type: "info",
 			mtype: 'init',
