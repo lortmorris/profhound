@@ -27,7 +27,7 @@ const profhound = function (opts) {
 			error: e,
 			type: 'info',
 			mtype: 'error'
-		})
+		});
 	}
 
 
@@ -50,14 +50,17 @@ const profhound = function (opts) {
 			uuid: req.uuid,
 			time: new Date().getTime(),
 			hrtime: process.hrtime(),
-			body: req.body,
-			query: req.query,
-			url: req.url,
+			ip: realip(req),
+			protocol: req.protocol,
 			hostname: req.hostname,
+			method: req.method,
+			url: req.url,
 			headers: req.headers,
+			query: req.query,
+			body: req.body,
 			type: "info",
-			mtype: 'init',
-			ip: realip(req)
+			mtype: 'init'
+
 		};
 
 		saveData(req.init);
